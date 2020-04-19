@@ -2,26 +2,55 @@ import React from 'react';
 
 interface Props {}
 
-import {StyleSheet, View, Text, StatusBar, Image} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-declare const global: {HermesInternal: null | {}};
+import {StyleSheet, View, FlatList} from 'react-native';
+import Header from './components/Header';
+import TaskItem from './components/TaskItem';
+import TaskForm from './components/TaskForm';
+// import uuid from 'uuid/v4';
 
 const App: React.FC<Props> = () => {
+  const [tasks, setTasks] = React.useState<ITasks[]>([
+    {
+      id: 'sadasdas',
+      text: 'Walk the dog',
+      completed: false,
+    },
+    {
+      id: 'asdasda',
+      text: 'Cook some food',
+      completed: false,
+    },
+    {
+      id: 'sdasda',
+      text: 'Take a shower',
+      completed: true,
+    },
+  ]);
+
+  const handleDelete = (id: string): void => {
+    // STATE BEFORE WE CHANGE IT
+    setTasks((prevState) => {
+      return prevState.filter((item) => item.id !== id);
+    });
+  };
+
+  const handleAddNewTask = (text: string): void => {
+    setTasks((prevState) => {
+      return [...prevState, {id: '2312sadsa', text, completed: false}];
+    });
+  };
+
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.textSize}>Hello</Text>
-        <Image
-          source={{uri: 'https://randomuser.me/api/portraits/men/1.jpg'}}
-          style={styles.img}
+        <Header title="Task List" title2="With React Native" />
+        <TaskForm handleAddNewTask={handleAddNewTask} />
+        <FlatList
+          data={tasks}
+          renderItem={({item}) => (
+            <TaskItem task={item} handleDelete={handleDelete} />
+          )}
+          keyExtractor={(item) => item.id}
         />
       </View>
     </>
@@ -31,16 +60,7 @@ const App: React.FC<Props> = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textSize: {
-    fontSize: 40,
-  },
-  img: {
-    width: 100,
-    height: 100,
-    borderRadius: 100 / 2,
+    paddingTop: 60,
   },
 });
 
